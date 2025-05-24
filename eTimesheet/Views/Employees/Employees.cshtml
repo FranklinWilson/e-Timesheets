@@ -1,0 +1,69 @@
+﻿@model EmployeeList
+@{  
+    ViewData["Title"] = "Employees";
+}
+
+<h1 class="mx-4 text-center">Employees</h1>
+
+<div class="mx-4">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Wage</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+            <tbody>
+            <form asp-action="CreateEmployee" method="post">
+                <tr>
+                    <td>
+                        <input asp-for="NewEmployee.Name" class="form-control" placeholder="Name" />
+                        <span asp-validation-for="NewEmployee.Name" class="text-danger"></span>
+                    </td>
+                    <td>
+                        <input asp-for="NewEmployee.Wage" class="form-control" />
+                        <span asp-validation-for="NewEmployee.Wage" class="text-danger"></span>
+                    </td>
+                    <td>
+                        <input asp-for="NewEmployee.Email" class="form-control" placeholder="example@email.com" />
+                        <span asp-validation-for="NewEmployee.Email" class="text-danger"></span>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-info btn-sm">Create</button>
+                    </td>
+                </tr>
+            </form>
+            @if (Model.Employees != null && Model.Employees.Any())
+            {
+                @foreach (var emp in Model.Employees)
+                {
+                    <tr>
+                        <td>@emp.Name</td>
+                        <td>@emp.Wage:C</td>
+                        <td>@emp.Email</td>
+                        <td>
+                            <form asp-action="DeleteEmployee" asp-route-id="@emp.Id" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@emp.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this employee?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+    </table>
+</div>
+
+
+@if (Model.Employees == null || !Model.Employees.Any())
+{
+    <div class="d-flex justify-content-center mb-3">
+        <p class="lead">No Employees</p>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
