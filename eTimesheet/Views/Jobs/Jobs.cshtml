@@ -1,0 +1,58 @@
+﻿@model JobList
+<h1 class="mx-4 text-center">Jobs</h1>
+
+<div class="mx-4">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Expected Hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            <form asp-action="CreateJob" method="post">
+            <tr>
+                <td>
+                    <input asp-for="NewJob.Name" class="form-control" placeholder="Name" />
+                    <span asp-validation-for="NewJob.Name" class="text-danger"></span>
+                </td>
+                <td>
+                    <input asp-for="NewJob.ExpectedHours" class="form-control" />
+                    <span asp-validation-for="NewJob.ExpectedHours" class="text-danger"></span>
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-info btn-sm">Create</button>
+                </td>
+            </tr>
+            </form>
+            @if (Model.Jobs != null && Model.Jobs.Any())
+            {
+                @foreach (var job in Model.Jobs)
+                {
+                    <tr>
+                        <td>@job.Name</td>
+                        <td>@job.ExpectedHours</td>
+                        <td>
+                            <form asp-action="DeleteJob" asp-route-id="@job.Id" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@job.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this Job?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@if (Model.Jobs == null || !Model.Jobs.Any())
+{
+    <div class="d-flex justify-content-center mb-3">
+        <p class="lead">No Jobs</p>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

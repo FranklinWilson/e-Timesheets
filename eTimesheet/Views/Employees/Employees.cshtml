@@ -1,8 +1,4 @@
 ﻿@model EmployeeList
-@{  
-    ViewData["Title"] = "Employees";
-}
-
 <h1 class="mx-4 text-center">Employees</h1>
 
 <div class="mx-4">
@@ -10,7 +6,7 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Wage</th>
+                <th>Wage (£)</th>
                 <th>Email</th>
                 <th>Action</th>
             </tr>
@@ -37,16 +33,16 @@
             </form>
             @if (Model.Employees != null && Model.Employees.Any())
             {
-                @foreach (var emp in Model.Employees)
+                @foreach (var employee in Model.Employees)
                 {
                     <tr>
-                        <td>@emp.Name</td>
-                        <td>@emp.Wage:C</td>
-                        <td>@emp.Email</td>
+                        <td>@employee.Name</td>
+                        <td>@employee.Wage</td>
+                        <td>@employee.Email</td>
                         <td>
-                            <form asp-action="DeleteEmployee" asp-route-id="@emp.Id" method="post" style="display:inline;">
-                                <input type="hidden" name="id" value="@emp.Id" />
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this employee?');">Delete</button>
+                            <form asp-action="DeleteEmployee" asp-route-id="@employee.Id" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@employee.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this Employee?');">Delete</button>
                             </form>
                         </td>
                     </tr>

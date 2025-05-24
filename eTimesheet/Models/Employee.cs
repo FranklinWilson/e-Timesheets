@@ -17,5 +17,10 @@ namespace eTimesheet.Models
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+
+        public static implicit operator Employee(Job v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
