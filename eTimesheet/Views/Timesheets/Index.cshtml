@@ -1,73 +1,108 @@
-﻿@model TimesheetList
+﻿@using Microsoft.AspNetCore.Http  
+@model TimesheetList  
 
-<h1 class="text-center">Timesheets</h1>
+<h1 class="text-center">Timesheets</h1>  
 
 <div class="mx-4">
-    <form asp-action="Index" method="get" class="mb-3 d-flex gap-2">
-        <select name="employeeId" asp-items="Model.EmployeeList" class="form-control" style="max-width:200px">
-            <option value="">All Employees</option>
-        </select>
-        <select name="jobId" asp-items="Model.JobList" class="form-control" style="max-width:200px">
-            <option value="">All Jobs</option>
-        </select>
-        <button type="submit" class="btn btn-primary">Filter</button>
-    </form>
+    <div class="my-4">
+        <form asp-action="Index" method="get" class="mb-3 d-flex align-items-end" style="width:fit-content;">
+            <div class="border-end">
+                <div class="p-2">
+                    <label for="employeeId" class="form-label">Employee</label>
+                    <select id="employeeId" name="employeeId" asp-items="Model.EmployeeList" class="form-control" style="max-width:200px">
+                        <option value="">All Employees</option>
+                    </select>
+                </div>
+            </div>
+            <div class="border-end">
+                <div class="p-2">
+                    <label for="jobId" class="form-label">Job</label>
+                    <select id="jobId" name="jobId" asp-items="Model.JobList" class="form-control" style="max-width:200px">
+                        <option value="">All Jobs</option>
+                    </select>
+                </div>
+            </div>
+            <div class="border-end">
+                <div class="p-2">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input id="startDate" type="date" name="startDate" class="form-control" style="max-width:180px" value="@Context.Request.Query["startDate"]" />
+            
+                </div>
+            </div>
+            <div class="border-end">
+                <div class="p-2">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input id="endDate" type="date" name="endDate" class="form-control" style="max-width:180px" value="@Context.Request.Query["endDate"]" />
+                </div>
+            </div>
+            <div class="d-flex gap-2 align-items-end">
+                <div class="px-2 pb-2 pt-4">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="@Url.Action("Index", "Timesheets")" class="btn btn-secondary">Clear</a>
+                </div>
+            </div>
+        </form>
+    </div>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Employee</th>
-                <th>Job</th>
-                <th>Hours Worked</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="mb-2">
+        <span>Results: @Model.Timesheets?.Count()</span>
+    </div>
+
+    <table class="table table-bordered">  
+        <thead class="bg-primary bg-opacity-50">
+            <tr>  
+                <th>Employee</th>  
+                <th>Job</th>  
+                <th>Hours Worked</th>  
+                <th>Date</th>  
+                <th>Actions</th>  
+            </tr>  
+        </thead>  
+        <tbody>  
             <form asp-action="CreateTimesheet" method="post">
-                <tr>
+            <tr class="bg-secondary bg-opacity-10">
+                <td>  
+                        <select asp-for="NewTimesheet.EmployeeId" asp-items="Model.EmployeeList" class="form-control">  
+                            <option value="">Select Employee</option>  
+                        </select>  
+                        <span asp-validation-for="NewTimesheet.EmployeeId" class="text-danger"></span>  
+                    </td>  
+                    <td>  
+                        <select asp-for="NewTimesheet.JobId" asp-items="Model.JobList" class="form-control">  
+                            <option value="">Select Job</option>  
+                        </select>  
+                        <span asp-validation-for="NewTimesheet.JobId" class="text-danger"></span>  
+                    </td>  
+                    <td>  
+                        <input asp-for="NewTimesheet.HoursWorked" class="form-control" />  
+                        <span asp-validation-for="NewTimesheet.HoursWorked" class="text-danger"></span>  
+                    </td>  
+                    <td>  
+                        <input asp-for="NewTimesheet.Date" class="form-control" type="date" />  
+                    </td>  
+                    <td>  
+                        <button type="submit" class="btn btn-success w-50 btn-sm">Add</button>  
+                    </td>  
+                </tr>  
+            </form>  
+            @foreach (var ts in Model.Timesheets)  
+            {  
+                <tr>  
+                    <td>@ts.Employee?.Name</td>  
+                    <td>@ts.Job?.Name</td>  
+                    <td>@ts.HoursWorked</td>  
+                    <td>@ts.Date.ToShortDateString()</td>  
                     <td>
-                        <select asp-for="NewTimesheet.EmployeeId" asp-items="Model.EmployeeList" class="form-control">
-                            <option value="">Select Employee</option>
-                        </select>
-                        <span asp-validation-for="NewTimesheet.EmployeeId" class="text-danger"></span>
-                    </td>
-                    <td>
-                        <select asp-for="NewTimesheet.JobId" asp-items="Model.JobList" class="form-control">
-                            <option value="">Select Job</option>
-                        </select>
-                        <span asp-validation-for="NewTimesheet.JobId" class="text-danger"></span>
-                    </td>
-                    <td>
-                        <input asp-for="NewTimesheet.HoursWorked" class="form-control" />
-                        <span asp-validation-for="NewTimesheet.HoursWorked" class="text-danger"></span>
-                    </td>
-                    <td>
-                        <input asp-for="NewTimesheet.Date" class="form-control" type="date" />
-                    </td>
-                    <td>
-                        <button type="submit" class="btn btn-info btn-sm">Add</button>
-                    </td>
-                </tr>
-            </form>
-            @foreach (var ts in Model.Timesheets)
-            {
-                <tr>
-                    <td>@ts.Employee?.Name</td>
-                    <td>@ts.Job?.Name</td>
-                    <td>@ts.HoursWorked</td>
-                    <td>@ts.Date.ToShortDateString()</td>
-                    <td>
-                        <form asp-action="Delete" asp-route-id="@ts.Id" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this timesheet entry?');">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+                        <form asp-action="DeleteTimesheet" asp-route-id="@ts.Id" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm w-50" onclick="return confirm('Delete this Timesheet?');">Delete</button>  
+                        </form>  
+                    </td>  
+                </tr>  
+            }  
+        </tbody>  
+    </table>  
+</div>  
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+@section Scripts {  
+    <partial name="_ValidationScriptsPartial" />  
 }

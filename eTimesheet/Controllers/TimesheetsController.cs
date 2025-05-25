@@ -15,7 +15,7 @@ namespace eTimesheet.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int? employeeId, int? jobId)
+        public async Task<IActionResult> Index(int? employeeId, int? jobId, DateTime? startDate, DateTime? endDate)
         {
             var employees = await _context.Employees.ToListAsync();
             var jobs = await _context.Jobs.ToListAsync();
@@ -30,6 +30,12 @@ namespace eTimesheet.Controllers
 
             if (jobId.HasValue)
                 timesheetsQuery = timesheetsQuery.Where(t => t.JobId == jobId.Value);
+
+            if (startDate.HasValue)
+                timesheetsQuery = timesheetsQuery.Where(t => t.Date >= startDate.Value);
+
+            if (endDate.HasValue)
+                timesheetsQuery = timesheetsQuery.Where(t => t.Date <= endDate.Value);
 
             var timesheets = await timesheetsQuery.ToListAsync();
 
@@ -69,6 +75,19 @@ namespace eTimesheet.Controllers
                 JobList = new SelectList(jobs, "Id", "Name", newTimesheet.JobId)
             };
             return View("Index", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteTimesheet(int id)
+        {
+            var timesheet = await _context.Timesheets.FindAsync(id);
+            if (timesheet != null)
+            {
+                _context.Timesheets.Remove(timesheet);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }
