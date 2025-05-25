@@ -15,21 +15,31 @@ namespace eTimesheet.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? employeeId, int? jobId)
         {
             var employees = await _context.Employees.ToListAsync();
             var jobs = await _context.Jobs.ToListAsync();
-            var timesheets = await _context.Timesheets
+
+            var timesheetsQuery = _context.Timesheets
                 .Include(t => t.Employee)
                 .Include(t => t.Job)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (employeeId.HasValue)
+                timesheetsQuery = timesheetsQuery.Where(t => t.EmployeeId == employeeId.Value);
+
+            if (jobId.HasValue)
+                timesheetsQuery = timesheetsQuery.Where(t => t.JobId == jobId.Value);
+
+            var timesheets = await timesheetsQuery.ToListAsync();
 
             var model = new TimesheetList
             {
                 Timesheets = timesheets,
-                EmployeeList = new SelectList(employees, "Id", "Name"),
-                JobList = new SelectList(jobs, "Id", "Name")
+                EmployeeList = new SelectList(employees, "Id", "Name", employeeId),
+                JobList = new SelectList(jobs, "Id", "Name", jobId)
             };
+
             return View(model);
         }
 
