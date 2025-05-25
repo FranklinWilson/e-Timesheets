@@ -13,7 +13,9 @@ namespace eTimesheet.Controllers
         {
             var model = new JobList
             {
-                Jobs = await _context.Jobs.ToListAsync()
+                Jobs = await _context.Jobs
+                    .Include(j => j.Timesheets)
+                    .ToListAsync()
             };
             return View(model);
         }
@@ -37,7 +39,9 @@ namespace eTimesheet.Controllers
             // Reload the job list and pass the error state
             var model = new JobList
             {
-                Jobs = await _context.Jobs.ToListAsync(),
+                Jobs = await _context.Jobs
+                    .Include(j => j.Timesheets)
+                    .ToListAsync(),
                 NewJob = newJob
             };
             return View("Index", model);

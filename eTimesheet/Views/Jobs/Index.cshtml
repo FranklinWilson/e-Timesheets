@@ -5,8 +5,9 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Job Name</th>
                 <th>Expected Hours</th>
+                <th>Time Remaining</th>
             </tr>
         </thead>
         <tbody>
@@ -20,6 +21,7 @@
                     <input asp-for="NewJob.ExpectedHours" class="form-control" />
                     <span asp-validation-for="NewJob.ExpectedHours" class="text-danger"></span>
                 </td>
+                <td></td>
                 <td>
                     <button type="submit" class="btn btn-info btn-sm">Create</button>
                 </td>
@@ -32,6 +34,7 @@
                     <tr>
                         <td>@job.Name</td>
                         <td>@job.ExpectedHours</td>
+                        <td>@job.TimeRemaining</td>
                         <td>
                             <form asp-action="DeleteJob" asp-route-id="@job.Id" method="post" style="display:inline;">
                                 <input type="hidden" name="id" value="@job.Id" />
