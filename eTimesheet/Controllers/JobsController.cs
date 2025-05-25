@@ -9,23 +9,18 @@ namespace eTimesheet.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public JobsController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<IActionResult> Jobs()
+        public async Task<IActionResult> Index()
         {
             var model = new JobList
             {
                 Jobs = await _context.Jobs.ToListAsync()
             };
             return View(model);
+        }
+
+        public JobsController(ApplicationDbContext context)
+        {
+            _context = context;
         }
 
         [HttpPost]
@@ -36,7 +31,7 @@ namespace eTimesheet.Controllers
             {
                 _context.Jobs.Add(newJob);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Jobs));
+                return RedirectToAction(nameof(Index));
             }
 
             // Reload the job list and pass the error state
@@ -45,7 +40,7 @@ namespace eTimesheet.Controllers
                 Jobs = await _context.Jobs.ToListAsync(),
                 NewJob = newJob
             };
-            return View("Jobs", model);
+            return View("Index", model);
         }
 
         [HttpPost]
@@ -58,7 +53,7 @@ namespace eTimesheet.Controllers
                 _context.Jobs.Remove(job);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(Jobs));
+            return RedirectToAction(nameof(Index));
         }
     }
 }

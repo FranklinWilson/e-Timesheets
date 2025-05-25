@@ -13,6 +13,7 @@ namespace eTimesheet.Data
 
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Job> Jobs { get; set; }
+        public DbSet<Timesheet> Timesheets { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

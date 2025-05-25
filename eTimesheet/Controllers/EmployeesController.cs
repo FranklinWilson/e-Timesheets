@@ -8,17 +8,13 @@ namespace eTimesheet.Controllers
     public class EmployeesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         public EmployeesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IActionResult> Employees()
+        public async Task<IActionResult> Index()
         {
             var model = new EmployeeList
             {
@@ -35,7 +31,7 @@ namespace eTimesheet.Controllers
             {
                 _context.Employees.Add(newEmployee);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Employees));
+                return RedirectToAction(nameof(Index));
             }
 
             // Reload the employee list and pass the error state
@@ -57,7 +53,7 @@ namespace eTimesheet.Controllers
                 _context.Employees.Remove(employee);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(Employees));
+            return RedirectToAction(nameof(Index));
         }
     }
 }
