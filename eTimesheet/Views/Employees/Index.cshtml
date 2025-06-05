@@ -3,7 +3,7 @@
 
 <div class="mx-4">
     <table class="table table-bordered">
-        <thead>
+        <thead class="bg-primary bg-opacity-50">
             <tr>
                 <th>Name</th>
                 <th>Wage (£)</th>
@@ -13,7 +13,7 @@
         </thead>
             <tbody>
             <form asp-action="CreateEmployee" method="post">
-                <tr>
+            <tr class="bg-secondary bg-opacity-10">
                     <td>
                         <input asp-for="NewEmployee.Name" class="form-control" placeholder="Name" />
                         <span asp-validation-for="NewEmployee.Name" class="text-danger"></span>
@@ -27,7 +27,7 @@
                         <span asp-validation-for="NewEmployee.Email" class="text-danger"></span>
                     </td>
                     <td>
-                        <button type="submit" class="btn btn-info btn-sm">Create</button>
+                    <button type="submit" class="btn btn-success btn-sm">Create</button>
                     </td>
                 </tr>
             </form>
