@@ -9,10 +9,13 @@ namespace eTimesheet.Controllers
     public class TimesheetsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEmailService _emailService;
 
-        public TimesheetsController(ApplicationDbContext context)
+
+        public TimesheetsController(ApplicationDbContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         public async Task<IActionResult> Index(int? employeeId, int? jobId, DateTime? startDate, DateTime? endDate)
@@ -55,6 +58,25 @@ namespace eTimesheet.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (newTimesheet.HoursWorked > 10)
+                {
+                    var employee = await _context.Employees.FindAsync(newTimesheet.EmployeeId);
+                    var job = await _context.Jobs.FindAsync(newTimesheet.JobId);
+
+                    var emailBody = $"""
+                                        Employee: {employee?.Name}
+                                        Job: {job?.Name}
+                                        Date: {newTimesheet.Date.ToShortDateString()}
+                                        Hours Worked: {newTimesheet.HoursWorked}
+                                    """;
+
+                    await _emailService.SendEmailAsync(
+                        to: "example@email.com",
+                        subject: "Overtime Alert",
+                        body: emailBody
+                    );
+                }
+
                 _context.Timesheets.Add(newTimesheet);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
